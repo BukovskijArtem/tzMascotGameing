@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-divider orientation="right">
-      Режим: {{mode }}
+      Режим: {{ mode }}
       <a-switch v-model="isPreview" @change="onChange"/>
     </a-divider>
     <div v-for="(item, index) in pageData" :key="index" class="item">
@@ -14,17 +14,9 @@
             <a-menu-item key="3">Изображение</a-menu-item>
           </a-menu>
         </a-dropdown>
-        <a-dropdown >
-          <a-button type="primary" icon="unordered-list"/>
-          <a-menu slot="overlay" @click="handleAddClick">
-            <a-menu-item @click="upItem(item)"><a-icon type="arrow-up"/></a-menu-item>
-            <a-menu-item @click="downItem(item)"><a-icon type="arrow-down"/></a-menu-item>
-            <a-menu-item @click="copyItem(item)"><a-icon type="copy"/></a-menu-item>
-          </a-menu>
-        </a-dropdown>
       </a-row>
       <a-row>
-        <a-col :xs="2" :sm="4" :md="6" :lg="8" :xl="10">
+        <a-col :xs="12" :sm="4" :md="6" :lg="8" :xl="8">
           <div class="btn" v-if="!isPreview">
             <a-button @click="upItem(item)" type="primary" icon="arrow-up"/>
             <a-button @click="downItem(item)" type="primary" icon="arrow-down"/>
@@ -32,18 +24,19 @@
           </div>
         </a-col>
         <div v-if="item.type === 1">
-          <a-col :xs="20" :sm="16" :md="12" :lg="8" :xl="4">
+          <a-col :xs="11" :sm="16" :md="12" :lg="8" :xl="8">
             <a-input v-model="item.text" :disabled="isPreview" placeholder="Введите заголовок"/>
           </a-col>
         </div>
         <div  v-if="item.type === 2">
-          <a-col :xs="20" :sm="16" :md="12" :lg="8" :xl="4">
+          <a-col :xs="11" :sm="16" :md="12" :lg="8" :xl="8">
             <a-textarea v-model="item.text" :disabled="isPreview" placeholder="Введите текст" :auto-size="{ minRows: 2, maxRows: 6 }"/>
           </a-col>
         </div>
         <div v-if="item.type === 3">
-          <a-col :xs="20" :sm="16" :md="12" :lg="8" :xl="4" v-if="item.type === 3">
+          <a-col :xs="11" :sm="16" :md="12" :lg="8" :xl="8" v-if="item.type === 3">
             <a-upload
+              class="upload"
               :disabled="isPreview"
               name="avatar"
               list-type="picture-card"
@@ -51,17 +44,17 @@
               :show-upload-list="false"
               @change="handleChange"
             >
-              <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+              <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="img"/>
               <div v-else>
                 <a-icon :type="loading ? 'loading' : 'plus'" />
                 <div>
-                  Upload
+                  Изображение
                 </div>
               </div>
             </a-upload>
           </a-col>
         </div>
-        <a-col :xs="2" :sm="4" :md="6" :lg="8" :xl="10">
+        <a-col :xs="1" :sm="4" :md="6" :lg="8" :xl="8">
         </a-col>
       </a-row>
     </div>
@@ -139,6 +132,7 @@ export default {
         newEl.text = item.text
       }
       this.pageData.splice(this.pageData.indexOf(item), 0, newEl)
+      return
     },
     upItem (item) {
       let index = this.pageData.indexOf(item)
@@ -146,8 +140,12 @@ export default {
       if (tmpIndex < 0) {
         return
       }
-      console.log(this.pageData[1])
-      console.log(this.pageData[0])
+      let a = JSON.parse(JSON.stringify(this.pageData[index]))
+      let b = JSON.parse(JSON.stringify(this.pageData[tmpIndex]))
+      this.pageData[index] = b
+      this.pageData[tmpIndex] = a
+      this.isPreview = true
+      this.isPreview = false
     },
     downItem (item) {
       let index = this.pageData.indexOf(item)
@@ -155,8 +153,12 @@ export default {
       if (tmpIndex === this.pageData.length) {
         return
       }
-      console.log(this.pageData[1])
-      console.log(this.pageData[2])
+      let a = JSON.parse(JSON.stringify(this.pageData[index]))
+      let b = JSON.parse(JSON.stringify(this.pageData[tmpIndex]))
+      this.pageData[index] = b
+      this.pageData[tmpIndex] = a
+      this.isPreview = true
+      this.isPreview = false
     }
   },
   computed: {
@@ -172,21 +174,49 @@ export default {
   margin-bottom: 20px;
 }
 .item__add {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   margin-bottom: 20px;
 }
 .item__add button {
   margin-left: 15px;
 }
 .btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 .btn button {
-  margin-left: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.upload {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.img {
+  width: 100px;
+  height: 100px;
 }
 .footer {
   width: 100%;
