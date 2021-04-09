@@ -42,8 +42,7 @@
               list-type="picture-card"
               action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
               :show-upload-list="false"
-              @change="handleChange"
-            >
+              @change="handleChange">
               <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="img"/>
               <div v-else>
                 <a-icon :type="loading ? 'loading' : 'plus'" />
@@ -69,7 +68,6 @@ export default {
     return {
       loading: false,
       imageUrl: '',
-      num: 3,
       mode: 'редактирование',
       isPreview: false
     }
@@ -85,7 +83,6 @@ export default {
     },
     handleAddClick (key) {
       let newEl = {
-          id: ++this.num,
           type: Number(key.key)
       }
       switch (key.key) {
@@ -101,6 +98,7 @@ export default {
           break
       }
       this.pageData.push(newEl)
+      this.localStorage()
     },
     handleChange(file) {
       if (file.file.status === 'uploading') {
@@ -122,7 +120,6 @@ export default {
     },
     copyItem (item) {
       let newEl = {
-        id: ++this.num,
         type: item.type
       }
       if (item.type === 3) {
@@ -132,7 +129,7 @@ export default {
         newEl.text = item.text
       }
       this.pageData.splice(this.pageData.indexOf(item), 0, newEl)
-      return
+      this.localStorage()
     },
     upItem (item) {
       let index = this.pageData.indexOf(item)
@@ -140,12 +137,11 @@ export default {
       if (tmpIndex < 0) {
         return
       }
-      let a = JSON.parse(JSON.stringify(this.pageData[index]))
-      let b = JSON.parse(JSON.stringify(this.pageData[tmpIndex]))
+      let a = this.pageData[index]
+      let b = this.pageData[tmpIndex]
       this.pageData[index] = b
       this.pageData[tmpIndex] = a
-      this.isPreview = true
-      this.isPreview = false
+      this.localStorage()
     },
     downItem (item) {
       let index = this.pageData.indexOf(item)
@@ -153,17 +149,25 @@ export default {
       if (tmpIndex === this.pageData.length) {
         return
       }
-      let a = JSON.parse(JSON.stringify(this.pageData[index]))
-      let b = JSON.parse(JSON.stringify(this.pageData[tmpIndex]))
+      let a = this.pageData[index]
+      let b = this.pageData[tmpIndex]
       this.pageData[index] = b
       this.pageData[tmpIndex] = a
+      this.localStorage()
+    },
+    localStorage () {
+      localStorage.pageData = JSON.stringify(this.pageData)
       this.isPreview = true
       this.isPreview = false
     }
   },
   computed: {
     pageData () {
-      return this.$store.getters.PAGE_DATA
+      if (localStorage.pageData) {
+        return JSON.parse(localStorage.pageData)
+      } else {
+        return this.$store.getters.PAGE_DATA
+      }
     }
   }
 }
