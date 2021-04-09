@@ -93,8 +93,7 @@ export default {
           newEl.text = ''
           break
         case '3':
-          newEl.imageUrl = '',
-          newEl.loading = false
+          newEl.imageUrl = ''
           break
       }
       this.pageData.push(newEl)
@@ -123,7 +122,6 @@ export default {
         type: item.type
       }
       if (item.type === 3) {
-        newEl.loading = false
         newEl.imageUrl = ''
       } else {
         newEl.text = item.text
@@ -174,6 +172,7 @@ export default {
 </script>
 
 <style>
+@import 'ant-design-vue/dist/antd.css';
 .item {
   margin-bottom: 20px;
 }

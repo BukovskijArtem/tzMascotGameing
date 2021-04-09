@@ -8,7 +8,7 @@ let store = new Vuex.Store({
         pageData: [
             {type: 1, text: 'aaa'},
             {type: 2, text: 'bbb'},
-            {type: 3, imageUrl: '', loading: false}
+            {type: 3, imageUrl: ''}
         ]
     },
     getters: {
